@@ -2,17 +2,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-train_df = pd.read_csv('data/train.csv')
-train_data = np.array(train_df)
-np.random.shuffle(train_data)
-
-x_train, y_train = train_data[1000:, 1:].T, train_data[1000:, :1].T
-x_train = x_train / 255.
-
-x_test, y_test = train_data[:1000, 1:].T, train_data[:1000, :1].T
-print(y_test)
-x_test = x_test / 255.
-
 
 def init_params():
     W1 = np.random.rand(10, 784) - 0.5
@@ -74,7 +63,6 @@ def get_predictions(A2):
 
 
 def get_accuracy(predictions, Y):
-    print(predictions, Y)
     return np.sum(predictions == Y) / Y.size
 
 
@@ -108,8 +96,19 @@ def make_predictions(X, W1, b1, W2, b2):
     return predictions
 
 
+train_df = pd.read_csv('data/train.csv')
+train_data = np.array(train_df)
+np.random.shuffle(train_data)
+
+x_train, y_train = train_data[1000:, 1:].T, train_data[1000:, :1].T
+x_train = x_train / 255.
+
+x_test, y_test = train_data[:1000, 1:].T, train_data[:1000, :1].T
+x_test = x_test / 255.
+
 W1, b1, W2, b2 = train_fn(x_train, y_train, 500, 0.1)
 predictions = make_predictions(x_test, W1, b1, W2, b2)
+
 print(get_accuracy(predictions, y_test))
 show_predictions(x_test, predictions, y_test)
 
