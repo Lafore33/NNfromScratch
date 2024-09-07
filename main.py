@@ -96,19 +96,30 @@ def make_predictions(X, W1, b1, W2, b2):
     return predictions
 
 
-train_df = pd.read_csv('data/train.csv')
-train_data = np.array(train_df)
-np.random.shuffle(train_data)
+def main():
 
-x_train, y_train = train_data[1000:, 1:].T, train_data[1000:, :1].T
-x_train = x_train / 255.
+    TEST_SIZE = 1000
+    EPOCHS = 500
+    LEARNING_RATE = 0.1
 
-x_test, y_test = train_data[:1000, 1:].T, train_data[:1000, :1].T
-x_test = x_test / 255.
+    train_df = pd.read_csv('data/train.csv')
+    train_data = np.array(train_df)
+    np.random.shuffle(train_data)
 
-W1, b1, W2, b2 = train_fn(x_train, y_train, 500, 0.1)
-predictions = make_predictions(x_test, W1, b1, W2, b2)
+    x_train, y_train = train_data[TEST_SIZE:, 1:].T, train_data[TEST_SIZE:, :1].T
+    x_train = x_train / 255.
 
-print(get_accuracy(predictions, y_test))
-show_predictions(x_test, predictions, y_test)
+    x_test, y_test = train_data[:TEST_SIZE, 1:].T, train_data[:TEST_SIZE, :1].T
+    x_test = x_test / 255.
+
+    W1, b1, W2, b2 = train_fn(x_train, y_train, EPOCHS, LEARNING_RATE)
+    predictions = make_predictions(x_test, W1, b1, W2, b2)
+
+    print(get_accuracy(predictions, y_test))
+    show_predictions(x_test, predictions, y_test)
+
+
+if __name__ == "__main__":
+    main()
+
 
