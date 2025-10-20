@@ -31,22 +31,22 @@ def one_hot(y, num_classes=10):
 
 
 def forward_prop(W1, b1, W2, b2, X):
-    z1 = W1.dot(X) + b1  # (10, 42000)
-    a1 = relu(z1)  # (10, 42000)
-    z2 = W2.dot(a1) + b2  # (10, 42000)
-    a2 = softmax(z2)  # (10. 42000)
+    z1 = W1.dot(X) + b1  # (10, 41000)
+    a1 = relu(z1)  # (10, 41000)
+    z2 = W2.dot(a1) + b2  # (10, 41000)
+    a2 = softmax(z2)  # (10, 41000)
     return z1, a1, z2, a2
 
 
 def backward_prop(z1, a1, a2, w2, X, Y):
     m = Y.size
-    one_hot_y = one_hot(Y, num_classes=10)  # (10, 42000)
-    dz2 = a2 - one_hot_y  # (10, 42000)
+    one_hot_y = one_hot(Y, num_classes=10)  # (10, 41000)
+    dz2 = a2 - one_hot_y  # (10, 41000)
     dw2 = 1 / m * dz2.dot(a1.T)  # (10, 10)
-    db2 = 1 / m * np.sum(dz2)  # (10, 1)
-    dz1 = w2.T.dot(dz2) * relu_derivative(z1)  # (10, 42000)
+    db2 = 1 / m * np.sum(dz2, axis=1, keepdims=True)  # (10, 1)
+    dz1 = w2.T.dot(dz2) * relu_derivative(z1)  # (10, 41000)
     dw1 = 1 / m * dz1.dot(X.T)  # (10, 784)
-    db1 = 1 / m * np.sum(dz1)  # (10, 1)
+    db1 = 1 / m * np.sum(dz1, axis=1, keepdims=True)  # (10, 1)
     return dw1, db1, dw2, db2
 
 
@@ -108,7 +108,6 @@ def main():
 
     x_train, y_train = train_data[TEST_SIZE:, 1:].T, train_data[TEST_SIZE:, :1].T
     x_train = x_train / 255.
-
     x_test, y_test = train_data[:TEST_SIZE, 1:].T, train_data[:TEST_SIZE, :1].T
     x_test = x_test / 255.
 
